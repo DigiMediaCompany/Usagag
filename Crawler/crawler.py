@@ -4,8 +4,9 @@ import pandas as pd
 import time
 import re
 import unicodedata
+import config
 
-BASE_URL = "https://usagag.com/ajax/loadmore/?layout=video&page={}"
+
 scraper = cloudscraper.create_scraper()
 
 def slugify(value):
@@ -20,7 +21,7 @@ data_list = []
 page = 2  
 
 while True:
-    url = BASE_URL.format(page)
+    url = config.BASE_URL.format(page)
     print(f"Đang lấy page {page} -> {url}")
 
     r = scraper.get(url, timeout=30)
@@ -63,11 +64,10 @@ while True:
             slug = slugify(title)
 
             data_list.append({
-                "Title": title,
-                "Slug": slug,
-                "Thumbnail": img_url,
-                "Page Link": href,
-                "Video Link": video_url
+                "title": title,
+                "slug": slug,
+                "thumbnail": img_url,
+                "videolink": video_url
             })
             print(f"[OK] {title} -> slug: {slug}")
 
@@ -78,5 +78,5 @@ while True:
     time.sleep(2)  
 
 df = pd.DataFrame(data_list)
-df.to_excel("usagag_videos.xlsx", index=False)
+df.to_excel(config.excel_name, index=False)
 

@@ -29,7 +29,7 @@ python crawler.py
 
 2. Seed videos into the API
 ```bash
-python seeding.py
+python insert.py
 ```
 
 ## Todo
