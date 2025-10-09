@@ -1,0 +1,122 @@
+// src/pages/VideoDetail.tsx
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useVideo, useAllVideos } from '../hooks/useVideos';
+
+export const VideoDetail = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const { data: video, isLoading, isError } = useVideo(slug || '');
+  const { data: allVideos = [] } = useAllVideos();
+
+  const relatedVideos = React.useMemo(() => {
+    if (!allVideos || !Array.isArray(allVideos) || allVideos.length === 0) {
+      return [];
+    }
+    
+    if (!video?.id) return [];
+    const otherVideos = allVideos.filter(v => v && v.id && v.id !== video.id);
+    if (otherVideos.length === 0) return [];
+    return [...otherVideos]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 3);
+  }, [allVideos, video?.id]);
+  
+  const AdBanner = ({ size = 'normal' }: { size?: 'normal' | 'large' }) => (
+    <div
+      className={`bg-gray-100 border border-dashed border-gray-300 rounded-lg flex items-center justify-center
+        ${size === 'large' ? 'h-[600px]' : 'h-[300px]'}`}
+    >
+      <span className="text-gray-400">Advertisement</span>
+    </div>
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (isError || !video) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">Failed to load video. It may not exist.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-12 gap-6">
+        {/* Left Ad */}
+        <div className="hidden lg:block lg:col-span-2">
+          <AdBanner size="large" />
+        </div>
+
+        {/* Video Center */}
+        <div className="col-span-12 lg:col-span-8">
+          <div className="w-full bg-black rounded-lg overflow-hidden aspect-video">
+            <video
+              src={video.video}
+              controls
+              autoPlay
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+
+        {/* Right Ad */}
+        <div className="hidden lg:block lg:col-span-2">
+          <AdBanner size="large" />
+        </div>
+      </div>
+
+      {/* Related Videos */}
+      <div className="mt-12">
+        <h2 className="text-xl font-semibold mb-4">Related Videos</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {relatedVideos.map((relatedVideo) => (
+            <Link 
+              to={`/video/${relatedVideo.slug}`}
+              key={relatedVideo.id}
+              className="block"
+            >
+              <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-video bg-gray-200 relative">
+                  <img 
+                    src={relatedVideo.thumbnail || 'https://via.placeholder.com/300x169'} 
+                    alt={relatedVideo.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded">
+                    {Math.floor(Math.random() * 10) + 1}:{('0' + Math.floor(Math.random() * 60)).slice(-2)}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-medium line-clamp-2">{relatedVideo.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {Math.floor(Math.random() * 1000) + 1} views
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Ad */}
+      <div className="mt-12">
+        <AdBanner size="large" />
+      </div>
+    </div>
+  );
+};
