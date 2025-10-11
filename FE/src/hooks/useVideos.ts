@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchVideos, fetchVideoBySlug, fetchAllVideos } from '../services/api';
+import { fetchVideos, fetchVideoBySlug } from '../services/api';
 
 export const useVideos = (page = 1) => {
   return useQuery({
@@ -17,10 +17,24 @@ export const useVideo = (slug: string) => {
     enabled: !!slug,
   });
 };
-export const useAllVideos = () => {
+export const useRelatedVideos = (excludeId?: string) => {
+  const randomPage = Math.floor(Math.random() * 10) + 1; // Random page from 1-10
+  
   return useQuery({
-    queryKey: ['allVideos'],
-    queryFn: fetchAllVideos,
+    queryKey: ['relatedVideos', randomPage, excludeId],
+    queryFn: async () => {
+      const result = await fetchVideos(randomPage, 12);
+      // Filter out the current video if excludeId is provided
+      const filteredVideos = excludeId 
+        ? result.videos.filter((video: any) => video.id !== excludeId)
+        : result.videos;
+      
+      // Shuffle and return first 12
+      return filteredVideos
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 12);
+    },
     staleTime: 5 * 60 * 1000,
+    enabled: true,
   });
 };

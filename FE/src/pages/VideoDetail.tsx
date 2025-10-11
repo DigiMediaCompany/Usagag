@@ -1,25 +1,11 @@
 // src/pages/VideoDetail.tsx
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useVideo, useAllVideos } from '../hooks/useVideos';
+import { useVideo, useRelatedVideos } from '../hooks/useVideos';
 
 export const VideoDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: video, isLoading, isError } = useVideo(slug || '');
-  const { data: allVideos = [] } = useAllVideos();
-
-  const relatedVideos = React.useMemo(() => {
-    if (!allVideos || !Array.isArray(allVideos) || allVideos.length === 0) {
-      return [];
-    }
-    
-    if (!video?.id) return [];
-    const otherVideos = allVideos.filter(v => v && v.id && v.id !== video.id);
-    if (otherVideos.length === 0) return [];
-    return [...otherVideos]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
-  }, [allVideos, video?.id]);
+  const { data: relatedVideos = [] } = useRelatedVideos(video?.id);
   
   const AdBanner = ({ size = 'normal' }: { size?: 'normal' | 'large' }) => (
     <div
@@ -55,22 +41,20 @@ export const VideoDetail = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-12 gap-6">
-        {/* Left Ad */}
-        <div className="hidden lg:block lg:col-span-2">
-          <AdBanner size="large" />
-        </div>
-
-        {/* Video Center */}
-        <div className="col-span-12 lg:col-span-8">
-          <div className="w-full bg-black rounded-lg overflow-hidden aspect-video">
-            <video
-              src={video.video}
-              controls
-              autoPlay
-              className="w-full h-full"
-            />
+    <div className="container mx-auto px-16 py-16">
+      {/* Hàng 1: Video chính + Right Ad */}
+      <div className="grid grid-cols-12 gap-6 mb-6">
+        {/* Video chính */}
+        <div className="col-span-12 lg:col-span-10 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50">
+          <div className="max-w-xs mx-auto">
+            <div className="w-full bg-black rounded-lg overflow-hidden aspect-video">
+              <video
+                src={video.video}
+                controls
+                autoPlay
+                className="w-full h-full"
+              />
+            </div>
           </div>
         </div>
 
@@ -80,37 +64,42 @@ export const VideoDetail = () => {
         </div>
       </div>
 
-      {/* Related Videos */}
-      <div className="mt-12">
-        <h2 className="text-xl font-semibold mb-4">Related Videos</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {relatedVideos.map((relatedVideo) => (
-            <Link 
-              to={`/video/${relatedVideo.slug}`}
-              key={relatedVideo.id}
-              className="block"
-            >
-              <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-gray-200 relative">
-                  <img 
-                    src={relatedVideo.thumbnail || 'https://via.placeholder.com/300x169'} 
-                    alt={relatedVideo.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <span className="absolute bottom-2 right-2 bg-black/75 text-white text-xs px-2 py-1 rounded">
-                    {Math.floor(Math.random() * 10) + 1}:{('0' + Math.floor(Math.random() * 60)).slice(-2)}
-                  </span>
+      {/* Hàng 2: Related Videos */}
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-10 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50">
+          <h2 className="text-lg font-semibold mb-3">Related Videos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {relatedVideos.map((relatedVideo: any) => (
+              <Link 
+                to={`/video/${relatedVideo.slug}`}
+                key={relatedVideo.id}
+                className="block"
+              >
+                <div className="bg-white rounded-md shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="aspect-video bg-gray-200 relative">
+                    <img 
+                      src={relatedVideo.thumbnail || 'https://via.placeholder.com/200x113'} 
+                      alt={relatedVideo.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute bottom-1 right-1 bg-black/75 text-white text-xs px-1.5 py-0.5 rounded text-[10px]">
+                      {Math.floor(Math.random() * 10) + 1}:{('0' + Math.floor(Math.random() * 60)).slice(-2)}
+                    </span>
+                  </div>
+                  <div className="p-2">
+                    <h3 className="font-medium line-clamp-2 text-sm">{relatedVideo.title}</h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {Math.floor(Math.random() * 1000) + 1} views
+                    </p>
+                  </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-medium line-clamp-2">{relatedVideo.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {Math.floor(Math.random() * 1000) + 1} views
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
+
+        {/* Placeholder để giữ cân đối layout */}
+        <div className="hidden lg:block lg:col-span-2"></div>
       </div>
 
       {/* Bottom Ad */}

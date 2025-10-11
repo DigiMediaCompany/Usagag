@@ -33,13 +33,3 @@ export const fetchVideoBySlug = async (slug: string) => {
     throw error;
   }
 };
-export const fetchAllVideos = async () => {
-  try {
-    const response = await axios.get(API_URL);
-    console.log('API Response:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching videos:', error);
-    throw error;
-  }
-};

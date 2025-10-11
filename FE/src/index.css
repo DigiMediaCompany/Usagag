@@ -47,3 +47,71 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #6b7280;
 }
+
+/* Custom Dropdown Animation */
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Animation utility classes */
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+.slide-in-from-top-4 {
+  animation-name: slideInFromTop;
+}
+
+.slide-in-from-right-full {
+  animation-name: slideInFromRight;
+}
+
+.slide-in-from-left-4 {
+  animation-name: slideInFromLeft;
+}
+
+.fade-in-0 {
+  animation-name: fadeIn;
+}
