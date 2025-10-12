@@ -33,5 +33,5 @@ python insert.py
 ```
 
 ## Todo
-- Change URL API at seeding.py
+- Update Bulk Insert in R2, D1 Worker
 

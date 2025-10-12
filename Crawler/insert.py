@@ -91,18 +91,18 @@ for batch_start in range(0, len(files_to_upload), config.BATCH_SIZE):
         print(f"Bulk upload batch failed: {e}")
 
 try:
-    success_count = 0
-    for idx, video in enumerate(usagag_videos, start=1):
-        try:
-            res = requests.post(f"{config.API_URL}/usagag-videos", json=video, timeout=30)
-            if res.status_code in (200, 201):
-                print(f"[{idx}] ✅ Uploaded: {video.get('title')}")
-                success_count += 1
-            else:
-                print(f"[{idx}] ❌ Error {res.status_code}: {res.text}")
-        except Exception as e:
-            print(f"[{idx}] ⚠️ Exception: {e}")
+    res = requests.post(
+        f"{config.API_URL}/usagag-videos/bulk",
+        json=usagag_videos,   
+        timeout=120         
+    )
 
-    print(f"\n✅ Successfully inserted {success_count}/{len(usagag_videos)} videos")
+    if res.status_code in (200, 201):
+        print(f"✅ Uploaded all {len(usagag_videos)} videos via bulk API")
+        print("Response:", res.text)
+    else:
+        print(f"❌ Error {res.status_code}: {res.text}")
+
 except Exception as e:
-    print(f"Error posting bulk API: {e}")
+    print(f"⚠️ Exception when posting bulk API: {e}")
+
