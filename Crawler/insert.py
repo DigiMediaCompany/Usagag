@@ -1,12 +1,16 @@
 import pandas as pd
-import requests
 from io import BytesIO
 import time
 import config
- 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+R2_URL=os.getenv('R2_URL')
+API_URL=os.getenv('API_URL')
 
 def build_public_url(filename):
-    return f"{config.R2_URL}/files/{filename}"
+    return f"{R2_URL}/files/{filename}"
 
 def upload_files_bulk(file_list):
     files_payload = []
@@ -20,7 +24,7 @@ def upload_files_bulk(file_list):
         bio.seek(0)
         files_payload.append(('files', (filename, bio)))
 
-    url = f"{config.R2_URL}/files/bulk"
+    url = f"{R2_URL}/files/bulk"
     res = requests.post(url, files=files_payload)
     try:
         res.raise_for_status()
@@ -47,7 +51,7 @@ def upload_files_bulk(file_list):
 
     return results
 
-df = pd.read_excel("usagag_videos.xlsx")
+df = pd.read_excel(config.excel_name)
 usagag_videos = df.to_dict(orient='records')
 
 files_to_upload = []
@@ -86,7 +90,7 @@ for batch_start in range(0, len(files_to_upload), config.BATCH_SIZE):
 
 try:
     res = requests.post(
-        f"{config.API_URL}/usagag-videos/bulk",
+        f"{API_URL}/usagag-videos/bulk",
         json=usagag_videos,   
         timeout=120         
     )

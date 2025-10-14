@@ -33,6 +33,4 @@ python insert.py
 ```
 
 ## Todo
-- Check config.py
-- Implement Bulk Insert at D1, R2 with /bulk
 
