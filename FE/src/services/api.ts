@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
-const API_URL = `${API_BASE_URL}/videos`;
+const API_URL = `${API_BASE_URL}/videos/`;
 
 export const fetchVideos = async (page = 1, limit = 12) => {
   try {
