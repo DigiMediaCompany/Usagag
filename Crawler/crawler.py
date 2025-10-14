@@ -67,7 +67,7 @@ while True:
                 "title": title,
                 "slug": slug,
                 "thumbnail": img_url,
-                "video": video_url
+                "videolink": video_url
             })
             print(f"[OK] {title} -> slug: {slug}")
 
