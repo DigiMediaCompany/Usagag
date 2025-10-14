@@ -7,27 +7,26 @@ export const Home = () => {
   const [page, setPage] = useState(1);
   const [allVideos, setAllVideos] = useState<any[]>([]);
   const { data, isLoading, isError, error } = useVideos(page);
-  const dataResp: any = data ?? {};
 
   useEffect(() => {
-    if (dataResp.videos) {
+    if (data?.videos) {
       if (page === 1) {
-        setAllVideos(dataResp.videos);
+        setAllVideos(data.videos);
       } else {
-        setAllVideos(prev => [...prev, ...dataResp.videos]);
+        setAllVideos(prev => [...prev, ...data.videos]);
       }
     }
   }, [data, page]);
 
   const loadMore = () => {
-    if (dataResp && page < dataResp.totalPages) {
+    if (data && page < data.totalPages) {
       setPage(prev => prev + 1);
     }
   };
 
   if (isLoading && page === 1) {
     return (
-          <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
       </div>
     );
@@ -41,7 +40,7 @@ export const Home = () => {
           <pre className="text-sm text-gray-600 mt-2">{error instanceof Error ? error.message : 'Unknown error'}</pre>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 rounded-md bg-indigo-600 px-16 py-2 text-white hover:bg-indigo-700"
+            className="mt-4 rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
           >
             Retry
           </button>
@@ -52,7 +51,7 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-  <div className="container mx-auto px-5 md:px-16 py-8">
+      <div className="container mx-auto px-4 py-8">
         {allVideos.length > 0 ? (
           <>
             <motion.div
@@ -65,7 +64,7 @@ export const Home = () => {
               ))}
             </motion.div>
 
-            {dataResp && page < dataResp.totalPages && (
+            {data && page < data.totalPages && (
               <div className="mt-8 text-center">
                 <button
                   onClick={loadMore}
