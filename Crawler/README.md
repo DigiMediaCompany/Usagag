@@ -33,4 +33,6 @@ python crawler.py
 python insert.py
 ```
 
+## Todo
+- Check .env 
 
