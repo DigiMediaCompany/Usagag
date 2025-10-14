@@ -33,4 +33,5 @@ python insert.py
 ```
 
 ## Todo
+- Check .env 
 

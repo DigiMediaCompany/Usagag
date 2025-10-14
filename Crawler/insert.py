@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 R2_URL=os.getenv('R2_URL')
-API_URL=os.getenv('API_URL')
+D1_URL=os.getenv('D1_URL')
 
 def build_public_url(filename):
     return f"{R2_URL}/files/{filename}"
@@ -90,7 +90,7 @@ for batch_start in range(0, len(files_to_upload), config.BATCH_SIZE):
 
 try:
     res = requests.post(
-        f"{API_URL}/usagag-videos/bulk",
+        f"{D1_URL}/usagag-videos/bulk",
         json=usagag_videos,   
         timeout=120         
     )
