@@ -4,13 +4,16 @@ import time
 import config
 from dotenv import load_dotenv
 import os
+import requests
 
 load_dotenv()
 R2_URL=os.getenv('R2_URL')
 D1_URL=os.getenv('D1_URL')
 
+
 def build_public_url(filename):
     return f"{R2_URL}/files/{filename}"
+
 
 def upload_files_bulk(file_list):
     files_payload = []
