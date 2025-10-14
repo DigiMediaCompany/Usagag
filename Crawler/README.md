@@ -33,5 +33,6 @@ python insert.py
 ```
 
 ## Todo
-- Change URL API at seeding.py
+- Check config.py
+- Implement Bulk Insert at D1, R2 with /bulk
 
