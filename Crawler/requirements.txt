@@ -1,0 +1,3 @@
+pandas
+cloudscraper
+python-dotenv
