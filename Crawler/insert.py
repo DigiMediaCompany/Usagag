@@ -2,11 +2,15 @@ import pandas as pd
 import cloudscraper
 import time
 import config
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 scraper = cloudscraper.create_scraper()
 
-df = pd.read_excel("usagag_videos.xlsx")
+df = pd.read_excel(config.excel_name)
 
 for idx, row in df.iterrows():
     record = {
@@ -18,7 +22,7 @@ for idx, row in df.iterrows():
 
     try:
         # Add batch insert
-        res = scraper.post(config.API_URL, json=record, timeout=20)
+        res = scraper.post(os.getenv("D1_URL"), json=record, timeout=20)
         if res.status_code in (200, 201):
             print(f"[{idx+1}] Seeded: {record['slug']}")
         elif res.status_code == 409:

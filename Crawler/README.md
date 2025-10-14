@@ -16,12 +16,13 @@ A Python tool to crawl videos from **usagag.com**, store them in an Excel file, 
 - Python 3.8+
 - pip
 
-### Install dependencies
+### Setup
+
+Change D1_URL in .env to your Cloudflare D1 URL
 ```bash
-pip install cloudscraper beautifulsoup4 pandas openpyxl
+pip install requirements.txt
 ```
 
-### Usage
 1. Crawl videos into Excel
 ```bash
 python crawler.py
@@ -32,6 +33,4 @@ python crawler.py
 python insert.py
 ```
 
-## Todo
-- Change URL API at seeding.py
 
