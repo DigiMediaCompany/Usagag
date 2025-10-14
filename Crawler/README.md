@@ -18,7 +18,7 @@ A Python tool to crawl videos from **usagag.com**, store them in an Excel file, 
 
 ### Setup
 
-Change D1_URL in .env to your Cloudflare D1 URL
+Change API_URL in .env to your Cloudflare D1 URL
 ```bash
 pip install requirements.txt
 ```

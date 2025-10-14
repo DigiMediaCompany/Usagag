@@ -22,7 +22,7 @@ for idx, row in df.iterrows():
 
     try:
         # Add batch insert
-        res = scraper.post(os.getenv("D1_URL"), json=record, timeout=20)
+        res = scraper.post(os.getenv("API_URL"), json=record, timeout=20)
         if res.status_code in (200, 201):
             print(f"[{idx+1}] Seeded: {record['slug']}")
         elif res.status_code == 409:
