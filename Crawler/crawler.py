@@ -22,7 +22,7 @@ page = 2
 
 while True:
     url = config.BASE_URL.format(page)
-    print(f"Đang lấy page {page} -> {url}")
+    print(f"Get Page {page} -> {url}")
 
     r = scraper.get(url, timeout=30)
     if not r.text.strip():
@@ -33,7 +33,7 @@ while True:
     items = soup.select("ul > li")
 
     if not items:
-        print("Không còn item")
+        print("No item")
         break
 
     for item in items:
@@ -59,7 +59,7 @@ while True:
                     if video_el:
                         video_url = video_el.get("src", "")
                 except Exception as e:
-                    print("Lỗi khi lấy video:", e)
+                    print("Error when getting video:", e)
 
             slug = slugify(title)
 
@@ -67,12 +67,12 @@ while True:
                 "title": title,
                 "slug": slug,
                 "thumbnail": img_url,
-                "videolink": video_url
+                "video": video_url
             })
             print(f"[OK] {title} -> slug: {slug}")
 
         except Exception as e:
-            print("Lỗi:", e)
+            print("Error:", e)
 
     page += 1
     time.sleep(2)  
