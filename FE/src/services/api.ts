@@ -8,6 +8,7 @@ export const fetchVideos = async (page = 1, limit = 12) => {
   try {
     const response = await axios.get(`${API_URL}/videos/`);
     const a = response.data;
+    console.log(limit)
     // const total = allVideos.length;
     // const start = (page - 1) * limit;
     // const paginatedVideos = allVideos.data.slice(start, start + limit);
