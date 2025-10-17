@@ -1,13 +1,12 @@
 // src/pages/VideoDetail.tsx
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { VideoCard } from '../components/VideoCard';
 import { useVideo, usePageVideos } from '../hooks/useVideos';
 
 export const VideoDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: video, isLoading, isError } = useVideo(slug || '');
-  // Lấy ngẫu nhiên một trang video để sử dụng làm gợi ý liên quan.
-  // Đầu tiên, lấy trang 1 để lấy thông tin totalPages, sau đó chọn ngẫu nhiên một trang.
   const { data: firstPageData } = usePageVideos(1, 12);
 
   const firstPage: any = firstPageData ?? {};
@@ -22,19 +21,17 @@ export const VideoDetail = () => {
   const randomPageResp: any = randomPageData ?? {};
 
   const relatedVideos = React.useMemo(() => {
-    // Kết hợp hai mảng video từ trang ngẫu nhiên và trang đầu tiên
+
     const arr1 = Array.isArray(randomPageResp.videos) ? randomPageResp.videos : [];
     const arr2 = Array.isArray(firstPage.videos) ? firstPage.videos : [];
     const combined = [...arr1, ...arr2];
     if (!combined || combined.length === 0) return [];
     if (!video?.id) return [];
 
-    // Lọc trùng và loại bỏ video hiện tại
     const seen = new Set<string | number>();
     const unique: any[] = [];
     for (const v of combined) {
       if (!v || !v.id) continue;
-      // khác các video hiện tại
       if (v.id === video.id) continue;
       if (!seen.has(v.id)) {
         seen.add(v.id);
@@ -43,7 +40,6 @@ export const VideoDetail = () => {
     }
 
     if (unique.length === 0) return [];
-    // xáo trộn và trả về tối đa 12 (đủ cho 3 hàng trên màn hình )
     for (let i = unique.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [unique[i], unique[j]] = [unique[j], unique[i]];
@@ -85,13 +81,12 @@ export const VideoDetail = () => {
   }
 
   return (
-  <div className="container mx-auto px-5 md:px-16 pt-8 pb-20">
+  <div className="min-h-screen bg-[#1f1f1f]">
+  <div  className="container mx-auto px-5 md:px-16 pt-8 pb-20 bg-[#1f1f1f]" >
       <div className="grid grid-cols-12 gap-6">
-      {/* Cột bên trái: chia thành hai thẻ, bên trên: video, phía dưới: các video liên quan */}
         <div className="col-span-12 lg:col-span-10 space-y-10">
           {/* Top card: Video */}
-          <div className="bg-white rounded-lg shadow p-2 md:p-5 overflow-hidden">
-            {/* Thu nhỏ video bằng cách hạn chế chiều rộng tối đa và căn giữa và giữ nguyên tỷ lệ khung hình */}
+          <div className=" rounded-lg p-2 md:p-5 overflow-hidden">
             <div className="mx-auto w-full max-w-xs bg-black rounded-lg overflow-hidden aspect-video">
               <video
                 src={video.video}
@@ -102,36 +97,35 @@ export const VideoDetail = () => {
             </div>
           </div>
 
+          {/* Recommended header (dark bar) */}
+          <div className="w-full mb-4">
+            <div className="w-full bg-[#1f1f1f] text-white italic font-semibold px-4 py-2 flex items-center">
+              <span className="text-lg ">RECOMMENDED</span>
+              <div className="flex-1 h-px bg-gray-400 mx-4" />
+              <div className="w-24 h-[2px] bg-white" />
+            </div>
+          </div>
+
           {/* Bottom card: Related Videos */}
-          <div className="bg-white rounded-lg shadow p-3 md:p-6">
-            <h2 className="text-xl font-semibold mb-4">Related Videos</h2>
+          <div className=" rounded-lg p-3 md:p-6">
+            {/* <h2 className="text-xl font-semibold mb-4">RECOMMENDED</h2> */}
+            
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {relatedVideos.map((relatedVideo) => (
-                <Link 
-                  to={`/video/${relatedVideo.slug}`}
+                <VideoCard
                   key={relatedVideo.id}
-                  className="block"
-                >
-                  <div className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-[16/11] bg-gray-200 relative">
-                      <img 
-                        src={relatedVideo.thumbnail || 'https://via.placeholder.com/300x169'} 
-                        alt={relatedVideo.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute bottom-2 right-2 bg-black/75 text-white text-[10px] px-1 py-0.5 rounded">
-                        {Math.floor(Math.random() * 10) + 1}:{('0' + Math.floor(Math.random() * 60)).slice(-2)}
-                      </span>
-                    </div>
-                    <div className="p-2">
-                      <h3 className="font-medium text-sm line-clamp-2">{relatedVideo.title}</h3>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {Math.floor(Math.random() * 1000) + 1} views
-                      </p>
-                    </div>
-                  </div>
-                </Link>
+                  video={relatedVideo}
+                  highlightOnHover={true}
+                  large={false}
+                  noBackground={true}
+                />
               ))}
+            </div>
+
+            <div className="mt-6 text-center">
+              <a href="/" className="inline-block px-6 py-3 rounded-md bg-yellow-400 text-black hover:bg-yellow-500 font-semibold">
+                SEE MORE VIDEOS
+              </a>
             </div>
           </div>
         </div>
@@ -144,5 +138,6 @@ export const VideoDetail = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };

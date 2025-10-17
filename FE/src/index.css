@@ -1,3 +1,6 @@
+/* Serif heading font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -46,4 +49,23 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #6b7280;
+}
+
+/* Page padding utility: top/bottom 100px, left/right 200px */
+.page-padding {
+  /* sensible defaults for small screens */
+  padding: 40px 16px;
+}
+
+/* On large screens apply the requested wide padding */
+@media (min-width: 1024px) {
+  .page-padding {
+    padding: 100px 200px;
+  }
+}
+
+/* Utility for serif italic headings */
+.heading-serif {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-style: italic;
 }
