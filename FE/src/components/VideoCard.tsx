@@ -6,36 +6,46 @@ interface VideoCardProps {
     id: number;
     title: string;
     slug: string;
-    thumbnail: string;
-    createdAt: string;
+    thumbnail?: string;
   };
+  highlightOnHover?: boolean;
+  large?: boolean;
+  compact?: boolean;
+  noBackground?: boolean;
 }
 
-export const VideoCard = ({ video }: VideoCardProps) => {
+export const VideoCard = ({ video, highlightOnHover = false, large = false, compact = false, noBackground = false }: VideoCardProps) => {
   return (
     <Link
       to={`/video/${video.slug}`}
-      className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-xl"
-    >
-      <div className="relative aspect-video overflow-hidden">
+      className={`group relative overflow-visible rounded-lg ${noBackground ? '' : 'bg-white'} transition-all duration-200`}>
+
+      <div className={`relative overflow-hidden ${large ? 'md:h-72' : compact ? 'h-28' : 'h-48'} rounded-lg`}> 
         <img
-          src={video.thumbnail}
+          src={video.thumbnail || 'https://via.placeholder.com/640x360'}
           alt={video.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 transition-opacity group-hover:opacity-100">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white bg-opacity-80">
-            <PlayIcon className="h-6 w-6 text-indigo-600" />
+
+        {/* persistent small play indicator bottom-left */}
+        <div className="absolute bottom-2 left-2 pointer-events-none">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center ring-2 ring-yellow-400">
+              <PlayIcon className="h-4 w-4 text-indigo-600" />
+            </div>
           </div>
         </div>
+
+        {/* hover yellow frame appears only when highlightOnHover is true */}
+        {highlightOnHover && (
+          <div className="absolute inset-0 pointer-events-none rounded-lg opacity-0 transition-opacity duration-150 group-hover:opacity-100 z-20">
+            <div className="w-full h-full border-4 border-yellow-400 rounded-lg" />
+          </div>
+        )}
       </div>
-      <div className="p-4">
-        <h3 className="line-clamp-2 font-medium text-gray-900" title={video.title}>
-          {video.title}
-        </h3>
-        <p className="mt-1 text-sm text-gray-500">
-          {new Date(video.createdAt).toLocaleDateString()}
-        </p>
+
+      <div className="p-3">
+        <h3 className={`line-clamp-2 ${compact ? 'text-sm' : 'text-base'} font-medium`}>{video.title}</h3>
       </div>
     </Link>
   );
